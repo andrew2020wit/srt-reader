@@ -1,0 +1,27 @@
+.header {
+  display: flex;
+  gap: 8px;
+
+  .warning {
+    font-size: 10px;
+  }
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  align-items: center;
+
+  margin: 16px 0;
+  font-size: 18px;
+
+  &.second {
+    color: green;
+  }
+
+  .date {
+    margin-right: 8px;
+    color: gray;
+    font-size: 12px;
+  }
+}

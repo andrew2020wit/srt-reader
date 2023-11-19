@@ -1,1 +1,32 @@
-app
+<div class="header">
+  <div class="open-file">
+    <button mat-button color="primary" (click)="fileInput0.click()">
+      Open srt file 1
+    </button>
+    <input #fileInput0 type="file" hidden (change)="openFile($event, 0)" />
+  </div>
+
+  <div class="open-file">
+    <button mat-button color="primary" (click)="fileInput1.click()">
+      Open srt file 2
+    </button>
+    <input #fileInput1 type="file" hidden (change)="openFile($event, 1)" />
+  </div>
+
+  <div class="warning">
+    You must use UTF-8 codepage for srt file (especially for non-english)
+  </div>
+</div>
+
+<div class="content">
+  @for (item of srtDataForView; track item) {
+  <div class="item" [class.second]="item.subtitleIndex === 1">
+    <span class="date">
+      {{ getFormadedTime(item.timeFromSeconds) }}
+    </span>
+    <div class="text">
+      {{ item.text }}
+    </div>
+  </div>
+  }
+</div>

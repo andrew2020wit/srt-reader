@@ -1,10 +1,10 @@
 {
   "name": "srt-reader",
-  "version": "0.0.0",
+  "version": "1.1.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --base-href /srt-reader/ --output-path ./docs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

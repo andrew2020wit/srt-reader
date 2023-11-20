@@ -13,15 +13,19 @@
     <input #fileInput1 type="file" hidden (change)="openFile($event, 1)" />
   </div>
 
-  <div class="warning">
-    You must use UTF-8 codepage for srt file (especially for non-english)
-  </div>
+  <button mat-button color="warn" (click)="clear()">Clear</button>
+
+  <button mat-button color="primary" (click)="goHome()">HomePage</button>
 </div>
 
 <div class="content">
-  @for (item of srtDataForView; track item) {
-  <div class="item" [class.second]="item.subtitleIndex === 1">
-    <span class="date">
+  @for (item of srtDataForView; track item.id) {
+  <div [id]="item.id" class="item" [class.second]="item.subtitleIndex === 1">
+    <span
+      class="date"
+      [class.selected]="item.id === selectedId"
+      (click)="selectItem(item)"
+    >
       {{ getFormadedTime(item.timeFromSeconds) }}
     </span>
     <div class="text">

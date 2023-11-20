@@ -2,34 +2,50 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-
-interface ISrtDataItem {
-  text: string;
-  number: number;
-  timeFromSeconds: number;
-  subtitleIndex: number;
-}
+import { localStorageKeysEnum } from './models/local-storage-keys.enum';
+import { ISrtDataItem } from './models/srt-data-item.interface';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterOutlet, MatButtonModule],
+  imports: [CommonModule, MatButtonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
-  title = 'srt-reader';
-
+export class AppComponent implements OnInit {
   protected srtDataForView: ISrtDataItem[] = [];
+  protected selectedId = '';
 
   private srtData: ISrtDataItem[][] = [[], []];
 
   constructor(private cd: ChangeDetectorRef) {}
+
+  public ngOnInit(): void {
+    this.restoreState();
+  }
+
+  protected selectItem(item: ISrtDataItem): void {
+    this.selectedId = item.id;
+    this.saveState();
+  }
+
+  protected goHome(): void {
+    window.open('https://github.com/andrew2020wit/srt-reader', '_blank');
+  }
+
+  protected clear(): void {
+    this.srtData = [[], []];
+    this.selectedId = '';
+    this.computeSrtDataForView();
+
+    localStorage.setItem(localStorageKeysEnum.selectedId, '');
+    localStorage.setItem(localStorageKeysEnum.srtData, '');
+  }
 
   protected getFormadedTime(timeFromSeconds: number): string {
     const h = Math.floor(timeFromSeconds / 3600);
@@ -62,7 +78,7 @@ export class AppComponent {
 
   private computeSrtData(textFile: string, subtitleIndex: number): void {
     this.srtData[subtitleIndex] = [];
-    let number: ISrtDataItem['number'] = 0;
+    let id: ISrtDataItem['id'] = '';
     let text: ISrtDataItem['text'] = '';
     let timeFromSeconds: ISrtDataItem['timeFromSeconds'] = 0;
     let index = 0;
@@ -77,7 +93,7 @@ export class AppComponent {
 
         if (!isNaN(timeFromSeconds)) {
           this.srtData[subtitleIndex].push({
-            number,
+            id,
             text,
             timeFromSeconds: timeFromSeconds,
             subtitleIndex,
@@ -89,7 +105,7 @@ export class AppComponent {
       }
 
       if (index === 0) {
-        number = +item;
+        id = 'id-' + subtitleIndex + '-' + item;
       }
 
       if (index === 1) {
@@ -121,5 +137,37 @@ export class AppComponent {
       .map((x) => +x);
 
     return arr[0] * 3600 + arr[1] * 60 + arr[2];
+  }
+
+  private saveState(): void {
+    localStorage.setItem(localStorageKeysEnum.selectedId, this.selectedId);
+    localStorage.setItem(
+      localStorageKeysEnum.srtData,
+      JSON.stringify(this.srtData)
+    );
+  }
+
+  private restoreState(): void {
+    const srtDateStr = localStorage.getItem(localStorageKeysEnum.srtData);
+
+    if (!srtDateStr) {
+      return;
+    }
+
+    this.selectedId =
+      localStorage.getItem(localStorageKeysEnum.selectedId) || '';
+
+    const srtData = JSON.parse(srtDateStr);
+
+    this.srtData[0] = srtData?.[0] || [];
+    this.srtData[1] = srtData?.[1] || [];
+
+    this.computeSrtDataForView();
+
+    if (this.selectedId) {
+      setTimeout(() => {
+        window.document.querySelector('#' + this.selectedId)?.scrollIntoView();
+      }, 200);
+    }
   }
 }

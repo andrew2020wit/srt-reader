@@ -10,8 +10,12 @@ Don't use a very big srt-file (like 1Mb file);
 
 https://github.com/andrew2020wit/srt-reader/blob/master/SrtReader.png
 
-https://github.com/andrew2020wit/srt-reader/tree/master/demo-srt
-
 https://andrew2020wit.github.io/srt-reader/
 
 MIT License.
+
+### See also:
+
+[Example](https://github.com/andrew2020wit/bilingua-dealer/tree/master/subtitles-examples)
+
+[Import srt into BilinguaDealer](https://github.com/andrew2020wit/bilingua-dealer)
